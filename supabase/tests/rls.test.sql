@@ -2,14 +2,23 @@
 -- only admins touch settings, roles and the admin checklist template; nobody reads Canva secrets.
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(24);
+select plan(26);
 
--- three people sign in with Google
-insert into auth.users (id, email, raw_user_meta_data) values
-  ('11111111-1111-1111-1111-111111111111', 'Alice@BDEmiageNice.com', '{"full_name":"Alice Martin"}'),
-  ('22222222-2222-2222-2222-222222222222', 'bob@gmail.com', '{"full_name":"Bob Durand"}'),
-  ('33333333-3333-3333-3333-333333333333', 'admin@bdemiagenice.com', '{"full_name":"Ada Admin"}');
+-- three people sign in with Google (provider google, email verified by Google)
+insert into auth.users (id, email, raw_user_meta_data, raw_app_meta_data, email_confirmed_at) values
+  ('11111111-1111-1111-1111-111111111111', 'Rls.Alice@BDEmiageNice.com', '{"full_name":"Alice Martin"}', '{"provider":"google"}', now()),
+  ('22222222-2222-2222-2222-222222222222', 'rls.bob@gmail.com', '{"full_name":"Bob Durand"}', '{"provider":"google"}', now()),
+  ('33333333-3333-3333-3333-333333333333', 'rls.admin@bdemiagenice.com', '{"full_name":"Ada Admin"}', '{"provider":"google"}', now());
 update public.members set role = 'admin' where id = '33333333-3333-3333-3333-333333333333';
+
+-- someone signs up with email + password using a domain address they do not own
+insert into auth.users (id, email, raw_user_meta_data, raw_app_meta_data, email_confirmed_at) values
+  ('44444444-4444-4444-4444-444444444444', 'rls.president@bdemiagenice.com', '{"full_name":"Faux Président"}', '{"provider":"email"}', null),
+  ('55555555-5555-5555-5555-555555555555', 'rls.tresorier@bdemiagenice.com', '{"full_name":"Faux Trésorier"}', '{"provider":"email"}', now());
+select ok(not exists (select 1 from public.members where id = '44444444-4444-4444-4444-444444444444'),
+  'an unverified email sign-up with a domain address is not a member');
+select ok(not exists (select 1 from public.members where id = '55555555-5555-5555-5555-555555555555'),
+  'only a Google sign-in makes a domain account active, not an email/password account');
 
 select is((select status::text from public.members where id = '11111111-1111-1111-1111-111111111111'), 'active',
   'a domain account is active at once (case-insensitive)');
@@ -24,7 +33,7 @@ set local request.jwt.claims = '{"sub":"22222222-2222-2222-2222-222222222222","r
 select lives_ok($$ select public.request_access() $$, 'bob can ask for access');
 select is((select status::text from public.members where id = '22222222-2222-2222-2222-222222222222'), 'pending',
   'bob sees his own pending row');
-select is((select count(*) from public.members), 1::bigint, 'a pending member sees only his own row');
+select is((select count(*) from public.members where id::text like '_1111%' or id::text like '_2222%' or id::text like '_3333%'), 1::bigint, 'a pending member sees only his own row');
 select lives_ok($$ select public.request_access() $$, 'asking twice is harmless');
 
 -- Alice works on an event
@@ -38,9 +47,9 @@ select lives_ok($$ insert into public.event_tasks (event_id, title, position)
   values ('aaaaaaaa-0000-0000-0000-000000000001', 'Réserver la salle', 1) $$, 'an active member adds a task');
 select lives_ok($$ insert into public.event_admin_tasks (event_id, label, position)
   values ('aaaaaaaa-0000-0000-0000-000000000001', 'Déclarer', 1) $$, 'an active member gets admin tasks');
-select results_eq($q$ with u as (update public.event_admin_tasks set done_by = '11111111-1111-1111-1111-111111111111', done_at = now() returning 1) select count(*) from u $q$, $q$ values (1::bigint) $q$,
+select results_eq($q$ with u as (update public.event_admin_tasks set done_by = '11111111-1111-1111-1111-111111111111', done_at = now() where event_id = 'aaaaaaaa-0000-0000-0000-000000000001' returning 1) select count(*) from u $q$, $q$ values (1::bigint) $q$,
   'an active member ticks an admin task');
-select is((select count(*) from public.members), 3::bigint, 'an active member sees every member');
+select is((select count(*) from public.members where id::text like '_1111%' or id::text like '_2222%' or id::text like '_3333%'), 3::bigint, 'an active member sees every member');
 select results_eq($q$ with u as (update public.settings set shared_drive_id = 'X' returning 1) select count(*) from u $q$, $q$ values (0::bigint) $q$,
   'a member cannot change settings');
 select results_eq($q$ with u as (update public.members set role = 'admin' where id = '11111111-1111-1111-1111-111111111111' returning 1) select count(*) from u $q$, $q$ values (0::bigint) $q$,
@@ -54,7 +63,7 @@ select throws_ok($$ insert into public.canva_oauth_states (state, verifier) valu
 
 -- Pending Bob still sees no event
 set local request.jwt.claims = '{"sub":"22222222-2222-2222-2222-222222222222","role":"authenticated"}';
-select is((select count(*) from public.events), 0::bigint, 'a pending member reads no event');
+select is((select count(*) from public.events where id = 'aaaaaaaa-0000-0000-0000-000000000001'), 0::bigint, 'a pending member reads no event');
 
 -- The admin
 set local request.jwt.claims = '{"sub":"33333333-3333-3333-3333-333333333333","role":"authenticated"}';
@@ -66,7 +75,7 @@ select lives_ok($$ insert into public.admin_task_templates (label, position, day
   'an admin writes the template');
 
 set local request.jwt.claims = '{"sub":"22222222-2222-2222-2222-222222222222","role":"authenticated"}';
-select is((select count(*) from public.events), 1::bigint, 'once accepted, bob reads events');
+select is((select count(*) from public.events where id = 'aaaaaaaa-0000-0000-0000-000000000001'), 1::bigint, 'once accepted, bob reads events');
 
 select * from finish();
 rollback;

@@ -35,6 +35,7 @@ Les couleurs viennent de `design-system/tokens.json` ; après l'avoir modifié :
    ```
 3. Authentication > URL Configuration : Site URL = `https://<compte>.github.io/<repo>/`, et ajouter cette même adresse (et `http://localhost:5173/` pour le dev) aux Redirect URLs.
 4. Authentication > Providers > Google : activer, coller l'ID et le secret du client OAuth (étape 2).
+   Authentication > Providers > **Email : désactiver** (seule la connexion Google est utilisée ; l'app n'accepte de toute façon comme membre d'office qu'un compte du domaine connecté par Google).
 5. Après la première connexion des admins, les nommer dans le SQL Editor :
    ```sql
    update members set role = 'admin' where email in ('prenom.nom@bdemiagenice.com');
