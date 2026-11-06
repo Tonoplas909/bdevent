@@ -1,3 +1,4 @@
+import { initialSteps } from '@domain/steps.js';
 import { supabase } from './supabase.js';
 
 export const check = ({ data, error }) => {
@@ -36,6 +37,21 @@ export async function setMemberStatus(id, status) {
 
 export async function setMemberRole(id, role) {
   check(await supabase.from('members').update({ role }).eq('id', id));
+}
+
+// — events —
+export async function listEvents() {
+  return check(await supabase.from('events')
+    .select('id, name, starts_at, ends_at, location, steps, event_admin_tasks(done_at), event_tasks(status)')
+    .order('starts_at'));
+}
+
+export async function getEvent(id) {
+  return check(await supabase.from('events').select('*, owner:members!events_owner_id_fkey(name, email)').eq('id', id).single());
+}
+
+export async function createEvent(row) {
+  return check(await supabase.from('events').insert({ ...row, steps: initialSteps() }).select('id').single());
 }
 
 // — settings (admins only) —
