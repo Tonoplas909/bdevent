@@ -5,6 +5,7 @@ import { STEPS } from '@domain/steps.js';
 import Icon from '../components/Icon.jsx';
 import AdminChecklist from '../components/AdminChecklist.jsx';
 import CanvaFallback from '../components/CanvaFallback.jsx';
+import ExportButton from '../components/ExportButton.jsx';
 import TaskTable from '../components/TaskTable.jsx';
 import { getEvent, listMembers } from '../lib/api.js';
 import { href } from '../lib/route.js';
@@ -78,7 +79,11 @@ export default function EventDetail({ id, me }) {
       <section className="card elev-sm" role="tabpanel">
         {tab === 'admin'
           ? <AdminChecklist eventId={event.id} me={me} generated={event.steps?.admin_tasks?.state === 'done'} />
-          : <TaskTable eventId={event.id} me={me} members={members} />}
+          : (
+            <TaskTable eventId={event.id} me={me} members={members}>
+              <ExportButton eventId={event.id} sheetId={event.sheet_id} />
+            </TaskTable>
+          )}
       </section>
     </div>
   );
