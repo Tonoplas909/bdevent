@@ -1,0 +1,178 @@
+/* Starter styles for the MIAGE Étendu look: page base, buttons, tags, cards, fields, navigation, the logo tile and Michel.
+   Light by default; put data-theme="dark" on <html> for the dark theme.
+   Every colour, size, radius and shadow comes from tokens.css (tokens.json); copy this file into a new app as is. */
+:root { --font-heading-weight: 800; }
+
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--color-bg); color: var(--color-text);
+  font-family: var(--font-body); font-size: 15px; line-height: 1.55; font-weight: 400;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading); font-weight: var(--font-heading-weight);
+  line-height: 1.05; letter-spacing: 0.01em; text-transform: uppercase; margin: 0 0 var(--space-2);
+}
+h1 { font-size: 42px; }
+h2 { font-size: 32px; }
+h3 { font-size: 25px; }
+h4 { font-size: 20px; }
+p { margin: 0 0 var(--space-3); }
+a { color: var(--color-accent); text-underline-offset: 3px; }
+img { display: block; max-width: 100%; }
+.text-muted { color: color-mix(in srgb, var(--color-text) 55%, transparent); }
+:focus { outline: none; }
+:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+::selection { background: color-mix(in srgb, var(--color-accent) 30%, transparent); }
+
+/* — buttons — */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  cursor: pointer; text-decoration: none;
+  font-family: var(--font-heading); font-weight: var(--font-heading-weight);
+  font-size: 16px; line-height: 1.2; letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-text);
+  background: transparent; border: 1px solid transparent;
+  padding: var(--space-2) calc(var(--space-3) * 1.2);
+  border-radius: var(--radius-pill);
+}
+.btn svg { display: block; }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn-primary { background: var(--color-accent); color: var(--color-bg); }
+.btn-primary:hover { background: var(--color-accent-hover); }
+.btn-primary:active { background: var(--color-accent-pressed); }
+.btn-secondary { border-color: var(--color-divider); }
+.btn-secondary:hover { background: color-mix(in srgb, var(--color-text) 7%, transparent); }
+.btn-secondary:active { background: color-mix(in srgb, var(--color-text) 14%, transparent); }
+.btn-ghost { color: var(--color-accent); padding-inline: var(--space-1); }
+.btn-ghost:hover { background: color-mix(in srgb, var(--color-accent) 10%, transparent); }
+.btn-ghost:active { background: color-mix(in srgb, var(--color-accent) 18%, transparent); }
+.btn-icon { width: 36px; height: 36px; padding: 0; }
+.btn-block { width: 100%; margin-top: var(--space-2); }
+
+/* — tags — */
+.tag {
+  display: inline-flex; align-items: center; font-size: 11px;
+  letter-spacing: 0.02em; padding: 3px 10px;
+  border-radius: var(--radius-pill);
+}
+.tag-accent { background: var(--color-tint-accent); color: var(--color-on-tint-accent); }
+.tag-accent-2 { background: var(--color-tint-accent-2); color: var(--color-on-tint-accent-2); }
+.tag-warn { background: var(--color-warn-100); color: var(--color-warn-800); }
+.tag-neutral { background: var(--color-tint-neutral); color: var(--color-on-tint-neutral); }
+.tag-outline { border: 1px solid var(--color-accent); color: var(--color-accent); }
+.tag-lg { font-size: 13px; padding: 5px 14px; }
+
+/* — card — */
+.card {
+  display: flex; flex-direction: column; gap: var(--space-2);
+  padding: var(--space-3); border-radius: var(--radius-card); background: var(--color-surface);
+}
+.elev-sm { box-shadow: var(--shadow-sm); }
+.elev-md { box-shadow: var(--shadow-md); }
+.elev-lg { box-shadow: var(--shadow-lg); }
+
+/* — page header — */
+.eyebrow {
+  font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--color-accent); margin-bottom: var(--space-2);
+}
+.page-title { font-size: 44px; line-height: 1.05; margin: 0 0 var(--space-3) 0; }
+.page-lede { margin: 0; font-size: 16px; max-width: 52ch; color: var(--color-text-secondary); }
+
+/* — logo tile: the logo's black outline vanishes on ink, so it sits on white — */
+.brand { display: flex; align-items: center; gap: var(--space-3); }
+.brand-logo {
+  width: 48px; height: 48px; flex: none; object-fit: contain;
+  padding: 4px; background: #fff; border-radius: 12px;
+}
+.brand-name {
+  font-family: var(--font-heading); font-weight: var(--font-heading-weight);
+  font-size: 24px; line-height: 1; text-transform: uppercase; letter-spacing: 0.01em;
+}
+
+/* — Michel, the penguin — */
+.page-intro { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: var(--space-4); align-items: center; }
+.page-intro > :not(.michel) { grid-column: 2; }
+.michel-head { grid-column: 1; grid-row: 1 / span 3; width: 116px; height: 116px; object-fit: contain; }
+.michel-head.michel-wide { width: 150px; }
+.michel-state { display: block; width: 150px; height: 120px; object-fit: contain; margin: 0 auto; }
+.michel-login { display: block; width: 120px; height: 116px; object-fit: contain; margin: calc(-1 * var(--space-2)) auto 0; }
+@media (max-width: 800px) {
+  .page-title { font-size: 30px; }
+  .michel-head { width: 72px; height: 72px; }
+  .michel-head.michel-wide { width: 92px; }
+  .page-intro { column-gap: var(--space-3); }
+}
+
+/* — cards: content, stat, ink stat — */
+.card-lg { padding: var(--space-6); gap: var(--space-3); }
+.card-title { margin: 0; font-size: 20px; }
+.card-meta { margin: 0; font-size: 14px; color: var(--color-text-secondary); }
+.card-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-2); }
+.card-tile { background: var(--color-tint-neutral); border-radius: var(--radius-lg); padding: var(--space-3); }
+.stat { padding: var(--space-4) var(--space-6); gap: var(--space-1); }
+.stat-label { margin: 0; font-size: 14px; color: var(--color-text-secondary); }
+.stat-value {
+  margin: 0; font-family: var(--font-heading); font-weight: var(--font-heading-weight);
+  font-size: 56px; line-height: 1; color: var(--color-text);
+}
+.stat-unit { font-size: 20px; color: var(--color-text-secondary); }
+.card-ink { background: var(--color-ink); color: var(--color-on-ink); }
+.card-ink .stat-label { color: var(--color-on-ink-muted); }
+.card-ink .stat-value { color: var(--color-on-ink); }
+.card-ink .stat-unit { color: var(--color-accent-2); }
+
+/* — fields — */
+.field { display: flex; flex-direction: column; gap: var(--space-1); min-width: 0; }
+.field-label { font-size: 13px; font-weight: 600; color: var(--color-text); }
+.field-hint { font-size: 12px; color: var(--color-text-secondary); }
+.field-error { font-size: 12px; color: var(--color-danger); }
+.input {
+  font: inherit; font-size: 15px; width: 100%; min-height: 44px;
+  padding: 0 var(--space-4); border-radius: var(--radius-pill);
+  border: 1px solid var(--color-border-control); background: var(--color-surface); color: var(--color-text);
+  transition: border-color 0.12s ease;
+}
+textarea.input { min-height: 96px; padding: var(--space-3) var(--space-4); border-radius: var(--radius-md); resize: vertical; }
+.input::placeholder { color: var(--color-text-secondary); opacity: 1; }
+.input:hover { border-color: var(--color-text-secondary); }
+.input:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; border-color: var(--color-accent); }
+.input[aria-invalid="true"] { border-color: var(--color-danger); }
+.input:disabled { opacity: 0.45; cursor: not-allowed; }
+.input-icon { position: relative; }
+.input-icon > svg { position: absolute; left: var(--space-4); top: 50%; transform: translateY(-50%); color: var(--color-text-secondary); pointer-events: none; }
+.input-icon > .input { padding-left: calc(var(--space-4) + 26px); }
+
+/* — navigation on the ink frame — */
+.topbar {
+  display: flex; align-items: center; gap: var(--space-6); flex-wrap: wrap;
+  min-height: 72px; padding: var(--space-2) var(--space-8);
+  background: var(--color-ink); color: var(--color-on-ink);
+}
+.topbar .brand-name { color: var(--color-on-ink); }
+.nav { display: flex; gap: var(--space-1); flex-wrap: wrap; }
+.nav-vertical { flex-direction: column; }
+.nav-item {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 var(--space-4);
+  border-radius: var(--radius-pill); text-decoration: none; color: var(--color-on-ink);
+  font-family: var(--font-heading); font-weight: var(--font-heading-weight);
+  font-size: 17px; letter-spacing: 0.04em; text-transform: uppercase;
+  transition: background-color 0.12s ease;
+}
+.nav-item svg { flex: none; }
+.nav-item:hover { background: color-mix(in srgb, var(--color-on-ink) 10%, transparent); }
+.nav-item[aria-current="page"] { background: var(--color-accent-2); color: var(--color-ink); }
+.nav-item:focus-visible { outline: 2px solid var(--color-accent-2); outline-offset: 2px; }
+.nav-section { margin: var(--space-3) 0 var(--space-1); padding: 0 var(--space-4); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-on-ink-muted); }
+.sidebar {
+  display: flex; flex-direction: column; gap: var(--space-4); width: 248px;
+  padding: var(--space-6) var(--space-3); background: var(--color-ink); color: var(--color-on-ink);
+}
+.sidebar .brand { padding: 0 var(--space-2); }
+.sidebar .brand-name { color: var(--color-on-ink); }
+.sidebar .nav-item { justify-content: flex-start; }
+@media (prefers-reduced-motion: reduce) { .nav-item, .input { transition: none; } }
+@media (max-width: 800px) {
+  .input { font-size: 16px; }
+  .topbar { padding: var(--space-2) var(--space-4); gap: var(--space-3); }
+  .stat-value { font-size: 44px; }
+}

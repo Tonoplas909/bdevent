@@ -1,0 +1,12 @@
+@font-face {
+  font-family: 'Barlow Condensed'; font-style: normal; font-weight: 600; font-display: swap;
+  src: url('/fonts/barlow-condensed-600-latin.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Barlow Condensed'; font-style: normal; font-weight: 800; font-display: swap;
+  src: url('/fonts/barlow-condensed-800-latin.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Figtree'; font-style: normal; font-weight: 400 700; font-display: swap;
+  src: url('/fonts/figtree-latin.woff2') format('woff2');
+}

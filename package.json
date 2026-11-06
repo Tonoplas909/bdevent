@@ -1,0 +1,24 @@
+{
+  "name": "bd-event",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "tokens": "node scripts/tokens-to-css.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.119.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "supabase": "^2.122.1",
+    "vite": "^5.4.11",
+    "vitest": "^2.1.8"
+  }
+}
