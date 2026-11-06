@@ -44,7 +44,7 @@ Les couleurs viennent de `design-system/tokens.json` ; après l'avoir modifié :
 ### 2. Google Cloud (organisation bdemiagenice.com)
 
 1. Créer un projet Google Cloud dans l'organisation.
-2. **Écran de consentement OAuth** : type **Interne** (seuls les comptes @bdemiagenice.com s'y connectent sans avertissement ; les autres comptes passent par une demande d'accès dans l'app).
+2. **Écran de consentement OAuth** : type **Externe**, puis « Publier l'application » (statut En production). Seules les informations de base sont demandées (email, profil), donc Google n'exige pas de vérification. Un écran **Interne** bloquerait tout compte hors @bdemiagenice.com dès la connexion Google : la demande d'accès aux admins serait alors impossible.
 3. **Identifiants > Créer un ID client OAuth** « Application Web » ; URI de redirection autorisée : `https://<ref>.supabase.co/auth/v1/callback`. Copier l'ID et le secret dans Supabase (étape 1.4).
 4. **Activer les API** Google Drive, Google Docs et Google Sheets.
 5. **Compte de service** : IAM > Comptes de service > Créer ; puis Clés > Ajouter une clé > JSON (garder le fichier, ne jamais le commiter).

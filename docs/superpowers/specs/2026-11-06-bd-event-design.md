@@ -262,7 +262,7 @@ bd'event/
 ## 9. Mise en place (guide dans le README)
 
 1. **Supabase** : créer le projet, lancer les migrations, activer le fournisseur Google, renseigner les admins initiaux.
-2. **Google Cloud** : créer un projet, configurer l'écran de consentement en **interne** (domaine `bdemiagenice.com`), créer le client OAuth (connexion Supabase), activer les API Drive, Docs et Sheets, créer un compte de service et sa clé, ajouter son email comme « Gestionnaire de contenu » du Drive partagé `BDE MIAGE NICE`.
+2. **Google Cloud** : créer un projet, configurer l'écran de consentement en **externe**, publié (un écran interne bloquerait les comptes hors domaine, et donc la demande d'accès du §2 ; seules les infos de base email/profil sont demandées, sans vérification Google), créer le client OAuth (connexion Supabase), activer les API Drive, Docs et Sheets, créer un compte de service et sa clé, ajouter son email comme « Gestionnaire de contenu » du Drive partagé `BDE MIAGE NICE`.
 3. **Canva** : créer l'intégration dans le portail développeur Canva, autorisations `folder:read` et `folder:write`, URL de retour vers `canva-oauth/callback`. Elle reste en brouillon, ce qui suffit pour les membres de l'équipe Canva du BDE.
 4. **Secrets** dans Supabase, variables dans GitHub, puis push sur `main`.
 5. **Dans Admin** : coller les liens des modèles et l'ID du Drive partagé, cliquer « Vérifier », connecter Canva, saisir la to-do administrative.
