@@ -19,6 +19,15 @@ test('light values in :root, dark overrides only where they differ', () => {
   expect(css).not.toMatch(/data-theme="dark"\]\s*{[^}]*--color-ink/);
 });
 
+test('an alias {other-token} becomes var(--other-token)', () => {
+  const css = tokensToCss({ color: { themes: [{ id: 'light' }, { id: 'dark' }], tokens: [
+    { name: 'color-neutral-700', value: '#4a5568' },
+    { name: 'color-text-secondary', value: { light: '{color-neutral-700}', dark: '#a9b8c8' } },
+  ] } });
+  expect(css).toContain('--color-text-secondary: var(--color-neutral-700);');
+  expect(css).toMatch(/data-theme="dark"\]\s*{[^}]*--color-text-secondary: #a9b8c8;/);
+});
+
 test('fonts, spacing, radius and shadow', () => {
   const css = tokensToCss(tokens);
   expect(css).toContain('--font-heading: "Barlow Condensed", system-ui, sans-serif;');

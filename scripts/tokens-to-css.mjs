@@ -3,8 +3,11 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
+// '{other-token}' is an alias of another token.
+const css = (v) => (typeof v === 'string' ? v.replace(/^\{([A-Za-z0-9_.-]+)\}$/, 'var(--$1)') : v);
+
 const valueFor = (token, themeId, firstId) =>
-  typeof token.value === 'string' ? (themeId === firstId ? token.value : undefined) : token.value[themeId];
+  css(typeof token.value === 'string' ? (themeId === firstId ? token.value : undefined) : token.value[themeId]);
 
 export function tokensToCss(tokens) {
   const themes = tokens.color?.themes ?? [{ id: 'light' }];
