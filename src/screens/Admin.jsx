@@ -4,6 +4,7 @@ import AdminMembers from './admin/AdminMembers.jsx';
 import AdminTemplates from './admin/AdminTemplates.jsx';
 import AdminTaskTemplate from './admin/AdminTaskTemplate.jsx';
 import AdminCanva from './admin/AdminCanva.jsx';
+import CheckSetup from './admin/CheckSetup.jsx';
 
 export default function Admin({ me, query }) {
   const isAdmin = me.role === 'admin';
@@ -21,7 +22,7 @@ export default function Admin({ me, query }) {
         <p className="page-lede">Les membres, les modèles Google, Canva et la to-do administrative commune à tous les événements.</p>
       </header>
       <AdminMembers me={me} />
-      <AdminTemplates />
+      <AdminTemplates><CheckSetup /></AdminTemplates>
       <AdminCanva query={query} />
       <AdminTaskTemplate />
     </div>
