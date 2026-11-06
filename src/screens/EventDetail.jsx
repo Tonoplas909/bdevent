@@ -2,7 +2,9 @@ import { useCallback, useEffect, useState } from 'react';
 import { formatDateFr, formatTimeFr } from '@domain/dates.js';
 import { driveFolderUrl, sheetUrl, docUrl, canvaFolderUrl } from '@domain/links.js';
 import Icon from '../components/Icon.jsx';
-import { getEvent } from '../lib/api.js';
+import AdminChecklist from '../components/AdminChecklist.jsx';
+import TaskTable from '../components/TaskTable.jsx';
+import { getEvent, listMembers } from '../lib/api.js';
 import { href } from '../lib/route.js';
 
 function FileLink({ id, url, icon, label }) {
@@ -18,6 +20,7 @@ export default function EventDetail({ id, me }) {
   const [event, setEvent] = useState(null);
   const [error, setError] = useState('');
   const [tab, setTab] = useState('admin');
+  const [members, setMembers] = useState([]);
 
   const load = useCallback(async () => {
     try {
@@ -27,6 +30,7 @@ export default function EventDetail({ id, me }) {
     }
   }, [id]);
   useEffect(() => { load(); }, [load]);
+  useEffect(() => { listMembers().then(setMembers).catch(() => {}); }, []);
 
   if (error) return <p className="notice notice-danger" role="alert">{error}</p>;
   if (!event) return <p className="text-muted">Chargement…</p>;
@@ -58,7 +62,9 @@ export default function EventDetail({ id, me }) {
         <button type="button" role="tab" className="tab" aria-selected={tab === 'tasks'} onClick={() => setTab('tasks')}>To-do de l'event</button>
       </div>
       <section className="card elev-sm" role="tabpanel">
-        {tab === 'admin' ? <p className="card-meta">Bientôt.</p> : <p className="card-meta">Bientôt.</p>}
+        {tab === 'admin'
+          ? <AdminChecklist eventId={event.id} me={me} generated={event.steps?.admin_tasks?.state === 'done'} />
+          : <TaskTable eventId={event.id} me={me} members={members} />}
       </section>
     </div>
   );

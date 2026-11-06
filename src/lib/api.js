@@ -54,6 +54,40 @@ export async function createEvent(row) {
   return check(await supabase.from('events').insert({ ...row, steps: initialSteps() }).select('id').single());
 }
 
+// — admin checklist of an event —
+export async function listAdminTasks(eventId) {
+  return check(await supabase.from('event_admin_tasks')
+    .select('id, label, position, due_date, done_at, done_by, done_by_member:members!event_admin_tasks_done_by_fkey(name)')
+    .eq('event_id', eventId).order('position'));
+}
+
+export async function setAdminTaskDone(id, done, meId) {
+  const patch = done ? { done_by: meId, done_at: new Date().toISOString() } : { done_by: null, done_at: null };
+  check(await supabase.from('event_admin_tasks').update(patch).eq('id', id));
+}
+
+// — event to-do —
+export async function listEventTasks(eventId) {
+  return check(await supabase.from('event_tasks').select('*').eq('event_id', eventId).order('position'));
+}
+
+export async function addEventTask(eventId, position) {
+  return check(await supabase.from('event_tasks').insert({ event_id: eventId, position }).select('*').single());
+}
+
+export async function updateEventTask(id, patch) {
+  check(await supabase.from('event_tasks').update(patch).eq('id', id));
+}
+
+export async function deleteEventTask(id) {
+  check(await supabase.from('event_tasks').delete().eq('id', id));
+}
+
+export async function reorderEventTasks(orderedIds) {
+  const results = await Promise.all(orderedIds.map((id, i) => supabase.from('event_tasks').update({ position: i + 1 }).eq('id', id)));
+  results.forEach(check);
+}
+
 // — settings (admins only) —
 export async function getSettings() {
   return check(await supabase.from('settings').select('shared_drive_id, sheet_template_id, declaration_template_id, canva_connected').single());
