@@ -6,6 +6,10 @@ import { getEvent } from '../lib/api.js';
 import { runEventStep } from '../lib/functions.js';
 import { href } from '../lib/route.js';
 
+const WAIT_MS = 2000;
+const MAX_WAIT_MS = 90_000;
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
 // Runs the creation steps one by one, showing each, and stops on a failure until "Réessayer".
 export default function Progress({ id }) {
   const [event, setEvent] = useState(null);
@@ -25,6 +29,7 @@ export default function Progress({ id }) {
       setEvent(ev);
       let current = ev.steps;
       setSteps(current);
+      let waited = 0;
       for (let step = nextStep(current); step; step = nextStep(current)) {
         setRunning(step);
         let result;
@@ -33,6 +38,19 @@ export default function Progress({ id }) {
         } catch (e) {
           result = { state: 'failed', error: e.message };
         }
+        if (result.state === 'running') {
+          // Another tab or member is running this step: wait for it instead of running it twice.
+          if (waited >= MAX_WAIT_MS) {
+            current = { ...current, [step]: { state: 'failed', error: 'Cette étape est en cours ailleurs depuis un moment. Réessaie dans quelques minutes.' } };
+            setSteps(current);
+            setStopped(true);
+            break;
+          }
+          await sleep(WAIT_MS);
+          waited += WAIT_MS;
+          continue;
+        }
+        waited = 0;
         current = { ...current, [step]: result.error ? { state: result.state, error: result.error } : { state: result.state } };
         setSteps(current);
         if (result.state === 'failed') { setStopped(true); break; }

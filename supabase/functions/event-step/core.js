@@ -66,7 +66,9 @@ async function canvaFolder({ event, canva }) {
 }
 
 function adminTasks({ event, templates }) {
-  const adminTaskRows = [...(templates ?? [])]
+  // null means the template could not be read: never mark the checklist done with no rows.
+  if (!Array.isArray(templates)) throw new Error('admin task templates not loaded');
+  const adminTaskRows = [...templates]
     .sort((a, b) => a.position - b.position)
     .map((t) => ({ event_id: event.id, label: t.label, position: t.position, due_date: dueDateFrom(event.starts_at, t.days_before) }));
   return { state: 'done', adminTaskRows };

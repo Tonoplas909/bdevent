@@ -124,6 +124,12 @@ test('admin_tasks copies the template with due dates', async () => {
     { event_id: 'E', label: 'Réserver la salle', position: 2, due_date: null }] });
 });
 
+test('admin_tasks without a template read (null) fails instead of being done with no rows', async () => {
+  const r = await runStep('admin_tasks', ctx({ templates: null }));
+  expect(r.state).toBe('failed');
+  expect(r.adminTaskRows).toBeUndefined();
+});
+
 test('unknown step and unexpected errors never throw', async () => {
   expect(await runStep('nope', ctx())).toEqual({ state: 'failed', error: 'Étape inconnue.' });
   google.copyFile = async () => { throw new TypeError('boom'); };
