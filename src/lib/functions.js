@@ -18,3 +18,5 @@ export async function callFunction(name, body) {
 
 export const runEventStep = (eventId, step) => callFunction('event-step', { event_id: eventId, step });
 export const checkSetup = async () => (await callFunction('check-setup', {})).items;
+export const startCanvaConnect = () => callFunction('canva-oauth?action=start', {});
+export const disconnectCanva = () => callFunction('canva-oauth?action=disconnect', {});

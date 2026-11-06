@@ -4,6 +4,7 @@ import { driveFolderUrl, sheetUrl, docUrl, canvaFolderUrl } from '@domain/links.
 import { STEPS } from '@domain/steps.js';
 import Icon from '../components/Icon.jsx';
 import AdminChecklist from '../components/AdminChecklist.jsx';
+import CanvaFallback from '../components/CanvaFallback.jsx';
 import TaskTable from '../components/TaskTable.jsx';
 import { getEvent, listMembers } from '../lib/api.js';
 import { href } from '../lib/route.js';
@@ -60,6 +61,8 @@ export default function EventDetail({ id, me }) {
           <FileLink id={event.canva_folder_id} url={canvaFolderUrl} icon="palette" label="Canva" />
         </div>
       </header>
+
+      {['skipped', 'failed'].includes(event.steps?.canva?.state) && <CanvaFallback event={event} onRetried={load} />}
 
       {creationUnfinished(event.steps) && (
         <div className="notice notice-warn">
