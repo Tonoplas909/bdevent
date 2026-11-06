@@ -1,11 +1,15 @@
 import { useCallback, useEffect, useState } from 'react';
 import { formatDateFr, formatTimeFr } from '@domain/dates.js';
 import { driveFolderUrl, sheetUrl, docUrl, canvaFolderUrl } from '@domain/links.js';
+import { STEPS } from '@domain/steps.js';
 import Icon from '../components/Icon.jsx';
 import AdminChecklist from '../components/AdminChecklist.jsx';
 import TaskTable from '../components/TaskTable.jsx';
 import { getEvent, listMembers } from '../lib/api.js';
 import { href } from '../lib/route.js';
+
+// Canva skipped is handled by its own notice; any other step left behind means "resume".
+const creationUnfinished = (steps) => STEPS.some((s) => s !== 'canva' && steps?.[s]?.state !== 'done');
 
 function FileLink({ id, url, icon, label }) {
   if (!id) return null;
@@ -56,6 +60,13 @@ export default function EventDetail({ id, me }) {
           <FileLink id={event.canva_folder_id} url={canvaFolderUrl} icon="palette" label="Canva" />
         </div>
       </header>
+
+      {creationUnfinished(event.steps) && (
+        <div className="notice notice-warn">
+          <p>La création n'est pas terminée.</p>
+          <a className="btn btn-secondary" href={href('progress', event.id)} style={{ alignSelf: 'flex-start' }}>Reprendre</a>
+        </div>
+      )}
 
       <div className="tabs" role="tablist" aria-label="To-do">
         <button type="button" role="tab" className="tab" aria-selected={tab === 'admin'} onClick={() => setTab('admin')}>Administratif</button>
